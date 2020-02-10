@@ -221,27 +221,63 @@ namespace HumaneSociety
         internal static void AddAnimal(Animal animal)
         {
             db.Animals.InsertOnSubmit(animal);
+            db.SubmitChanges();
         }
 
         internal static Animal GetAnimalByID(int id)
         {
-            throw new NotImplementedException();
+            var animal = db.Animals.Where(a => a.AnimalId == id).SingleOrDefault();
+            UserInterface.DisplayAnimalInfo(animal);
+            return animal;
         }
 
         internal static void UpdateAnimal(int animalId, Dictionary<int, string> updates)
-        {            
-            throw new NotImplementedException();
+        {
+            var update = db.Animals.Where(a => a.AnimalId == animalId).SingleOrDefault();
+            foreach(KeyValuePair<int, string> key in updates)
+            {
+                switch (key.Key)
+                {
+                    case 1:
+                        update.Category.Name = key.Value;
+                        break;
+                    case 2:
+                        update.Name = key.Value;
+                        break;
+                    case 3:
+                        update.Age = Convert.ToInt32(key.Value);
+                        break;
+                    case 4:
+                        update.Demeanor = key.Value;
+                        break;
+                    case 5:
+                        update.KidFriendly = key.Value == "true" ? true : false;
+                        break;
+                    case 6:
+                        update.PetFriendly = key.Value == "true" ? true : false;
+                        break;
+                    case 7:
+                        update.Weight = Convert.ToInt32(key.Value);
+                        break;
+                    case 8:
+                        update.AnimalId = Convert.ToInt32(key.Value);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         internal static void RemoveAnimal(Animal animal)
         {
-            throw new NotImplementedException();
+            db.Animals.DeleteOnSubmit(db.Animals.Where(x => x.AnimalId == animal.AnimalId).SingleOrDefault());
+            db.SubmitChanges();
         }
         
         // TODO: Animal Multi-Trait Search
         internal static IQueryable<Animal> SearchForAnimalsByMultipleTraits(Dictionary<int, string> updates) // parameter(s)?
         {
-            return db.Animals.Where(a => a.Demeanor == "");
+            throw new NotImplementedException();
         }
          
         // TODO: Misc Animal Things
