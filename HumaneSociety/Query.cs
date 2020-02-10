@@ -10,6 +10,8 @@ namespace HumaneSociety
     {        
         static HumaneSocietyDataContext db;
 
+        public delegate void EmployeeOperator(Employee employee);
+
         static Query()
         {
             db = new HumaneSocietyDataContext();
@@ -163,16 +165,62 @@ namespace HumaneSociety
 
         //// TODO Items: ////
         
-        // TODO: Allow any of the CRUD operations to occur here
+       
         internal static void RunEmployeeQueries(Employee employee, string crudOperation)
         {
-            throw new NotImplementedException();
+            //Created Method To Allow For All Employee CRUD Ops To Occur.
+            crudOperation = crudOperation.ToLower();
+            switch (crudOperation)
+            {
+                case "create":
+                    AddEmployee(employee);
+                    break;
+                case "remove":
+                    RemoveEmployee(employee);
+                    break;
+                case "update":
+                    UpdateEmployee(employee);
+                    break;
+                case "display":
+                    EmployeeDisplayInfo(employee.EmployeeNumber);
+                    break;
+                default:
+                    AddEmployee(employee);
+                    break;
+            }
         }
+        
+        internal static void AddEmployee(Employee employee)
+        {
+            db.Employees.InsertOnSubmit(employee);
+            db.SubmitChanges();
+        }
+
+        internal static void RemoveEmployee(Employee employee)
+        {
+            db.Employees.Where(e => e.EmployeeNumber == employee.EmployeeNumber).SingleOrDefault();
+            db.SubmitChanges();
+        }
+        
+        internal static void UpdateEmployee(Employee employee)
+        {
+            var update = db.Employees.Where(e => e.EmployeeNumber == employee.EmployeeNumber).SingleOrDefault();
+            update.FirstName = employee.FirstName;
+            update.LastName = employee.LastName;
+            update.Email = employee.Email;
+            db.SubmitChanges();
+        }
+
+        internal static void EmployeeDisplayInfo(int? employeeNumber)
+        {
+            UserInterface.DisplayEmployee(db.Employees.Where(e => e.EmployeeNumber == employeeNumber).FirstOrDefault());
+        }
+
 
         // TODO: Animal CRUD Operations
         internal static void AddAnimal(Animal animal)
         {
-            throw new NotImplementedException();
+            db.Animals.InsertOnSubmit(animal);
         }
 
         internal static Animal GetAnimalByID(int id)
@@ -193,7 +241,7 @@ namespace HumaneSociety
         // TODO: Animal Multi-Trait Search
         internal static IQueryable<Animal> SearchForAnimalsByMultipleTraits(Dictionary<int, string> updates) // parameter(s)?
         {
-            throw new NotImplementedException();
+            return db.Animals.Where(a => a.Demeanor == "");
         }
          
         // TODO: Misc Animal Things
