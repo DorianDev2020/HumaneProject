@@ -10,6 +10,8 @@ namespace HumaneSociety
     {        
         static HumaneSocietyDataContext db;
 
+        public delegate void EmployeeOperator(Employee employee);
+
         static Query()
         {
             db = new HumaneSocietyDataContext();
@@ -163,11 +165,60 @@ namespace HumaneSociety
 
         //// TODO Items: ////
         
-        // TODO: Allow any of the CRUD operations to occur here
+       
         internal static void RunEmployeeQueries(Employee employee, string crudOperation)
         {
+            //Created Method To Allow For All Employee CRUD Ops To Occur.
+            EmployeeOperator EOP = setDelegate(crudOperation);
+            EOP(employee);
             throw new NotImplementedException();
         }
+        private static EmployeeOperator setDelegate(string crudOperation)
+        {
+
+
+            switch (crudOperation)
+            {
+                case "Create":
+                    return new EmployeeOperator(EmployeeCreator);
+                case "Read":
+                    return new EmployeeOperator(EmployeeReader);
+                case "Update":
+                    return new EmployeeOperator(EmployeeUpdater);
+                case "Delete":
+                    return new EmployeeOperator(EmployeeDeleter);
+                default:
+                    return new EmployeeOperator(EmployeeReader);
+            }
+        }
+
+        public static void EmployeeCreator(Employee employee)
+        {
+            HumaneSocietyDataContext database = new HumaneSocietyDataContext();
+            database.Employees.InsertOnSubmit(employee);
+            database.SubmitChanges();
+        }
+
+        public static void EmployeeReader(Employee employee)
+        {
+
+        }
+
+        public static void EmployeeUpdater(Employee employee)
+        {
+            HumaneSocietyDataContext database = new HumaneSocietyDataContext();
+            database.Employees.InsertOnSubmit(employee);
+            database.SubmitChanges();
+        }
+
+        public static void EmployeeDeleter(Employee employee)
+        {
+            HumaneSocietyDataContext database = new HumaneSocietyDataContext();
+            database.Employees.DeleteOnSubmit(employee);
+            database.SubmitChanges();
+        }
+        //End (Dorian)
+
 
         // TODO: Animal CRUD Operations
         internal static void AddAnimal(Animal animal)
