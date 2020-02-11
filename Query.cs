@@ -169,60 +169,60 @@ namespace HumaneSociety
         internal static void RunEmployeeQueries(Employee employee, string crudOperation)
         {
             //Created Method To Allow For All Employee CRUD Ops To Occur.
-            EmployeeOperator EOP = setDelegate(crudOperation);
-            EOP(employee);
-            throw new NotImplementedException();
-        }
-        private static EmployeeOperator setDelegate(string crudOperation)
-        {
-
-
+            crudOperation = crudOperation.ToLower();
             switch (crudOperation)
             {
-                case "Create":
-                    return new EmployeeOperator(EmployeeCreator);
-                case "Read":
-                    return new EmployeeOperator(EmployeeReader);
-                case "Update":
-                    return new EmployeeOperator(EmployeeUpdater);
-                case "Delete":
-                    return new EmployeeOperator(EmployeeDeleter);
+                case "create":
+                    AddEmployee(employee);
+                    break;
+                case "remove":
+                    RemoveEmployee(employee);
+                    break;
+                case "update":
+                    UpdateEmployee(employee);
+                    break;
+                case "display":
+                    EmployeeDisplayInfo(employee.EmployeeNumber);
+                    break;
                 default:
-                    return new EmployeeOperator(EmployeeReader);
+                    AddEmployee(employee);
+                    break;
             }
         }
-
-        public static void EmployeeCreator(Employee employee)
+        
+        internal static void AddEmployee(Employee employee)
         {
+
             db = new HumaneSocietyDataContext();
             db.Employees.InsertOnSubmit(employee);
             db.SubmitChanges();
         }
 
-        public static void EmployeeReader(Employee employee)
+        internal static void RemoveEmployee(Employee employee)
         {
-
+            db.Employees.Where(e => e.EmployeeNumber == employee.EmployeeNumber).SingleOrDefault();
+            db.SubmitChanges();
         }
-
-        public static void EmployeeUpdater(Employee employee)
+        
+        internal static void UpdateEmployee(Employee employee)
         {
-            db = new HumaneSocietyDataContext();
-            db.Employees.InsertOnSubmit(employee);
+            var update = db.Employees.Where(e => e.EmployeeNumber == employee.EmployeeNumber).SingleOrDefault();
+            update.FirstName = employee.FirstName;
+            update.LastName = employee.LastName;
+            update.Email = employee.Email;
             db.SubmitChanges();
         }
 
-        public static void EmployeeDeleter(Employee employee)
-        {
-            db = new HumaneSocietyDataContext();
-            db.Employees.DeleteOnSubmit(employee);
-            db.SubmitChanges();
+        internal static void EmployeeDisplayInfo(int? employeeNumber)
+        { 
+            UserInterface.DisplayEmployee(db.Employees.Where(e => e.EmployeeNumber == employeeNumber).FirstOrDefault());
         }
-        //End (Dorian)
 
 
         // TODO: Animal CRUD Operations
         internal static void AddAnimal(Animal animal)
         {
+
             db = new HumaneSocietyDataContext();
             db.Animals.InsertOnSubmit(animal);
             db.SubmitChanges();
@@ -230,22 +230,55 @@ namespace HumaneSociety
 
         internal static Animal GetAnimalByID(int id)
         {
-            db = new HumaneSocietyDataContext();
-            db.SubmitChanges();
-            throw new NotImplementedException();
+
+            var animal = db.Animals.Where(a => a.AnimalId == id).SingleOrDefault();
+            UserInterface.DisplayAnimalInfo(animal);
+            return animal;
+
         }
 
         internal static void UpdateAnimal(int animalId, Dictionary<int, string> updates)
         {
-            db = new HumaneSocietyDataContext();
-            db.SubmitChanges();
-            throw new NotImplementedException();
+
+            var update = db.Animals.Where(a => a.AnimalId == animalId).SingleOrDefault();
+            foreach(KeyValuePair<int, string> key in updates)
+            {
+                switch (key.Key)
+                {
+                    case 1:
+                        update.Category.Name = key.Value;
+                        break;
+                    case 2:
+                        update.Name = key.Value;
+                        break;
+                    case 3:
+                        update.Age = Convert.ToInt32(key.Value);
+                        break;
+                    case 4:
+                        update.Demeanor = key.Value;
+                        break;
+                    case 5:
+                        update.KidFriendly = key.Value == "true" ? true : false;
+                        break;
+                    case 6:
+                        update.PetFriendly = key.Value == "true" ? true : false;
+                        break;
+                    case 7:
+                        update.Weight = Convert.ToInt32(key.Value);
+                        break;
+                    case 8:
+                        update.AnimalId = Convert.ToInt32(key.Value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
         }
 
         internal static void RemoveAnimal(Animal animal)
         {
-            db = new HumaneSocietyDataContext();
-            db.Animals.DeleteOnSubmit(animal);
+            db.Animals.DeleteOnSubmit(db.Animals.Where(x => x.AnimalId == animal.AnimalId).SingleOrDefault());
             db.SubmitChanges();
         }
         
@@ -258,17 +291,22 @@ namespace HumaneSociety
         // TODO: Misc Animal Things
         internal static int GetCategoryId(string categoryName)
         {
-            throw new NotImplementedException();
+            var category = db.Categories.Where(a => a.Name == categoryName).FirstOrDefault();
+            int categoryid = category.CategoryId;
+            return categoryid;
         }
         
         internal static Room GetRoom(int animalId)
         {
-            throw new NotImplementedException();
+            var room = db.Rooms.Where(a => a.AnimalId == animalId).FirstOrDefault();
+            return room;
         }
         
         internal static int GetDietPlanId(string dietPlanName)
         {
-            throw new NotImplementedException();
+            var diet = db.DietPlans.Where(d => d.Name == dietPlanName).SingleOrDefault();
+            int dietID = diet.DietPlanId;
+            return dietID;
         }
 
         // TODO: Adoption CRUD Operations
@@ -303,4 +341,6 @@ namespace HumaneSociety
             throw new NotImplementedException();
         }
     }
+  
+
 }

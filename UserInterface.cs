@@ -37,6 +37,18 @@ namespace HumaneSociety
 
             return input;
         }
+
+        internal static void DisplayEmployee(Employee employee)
+        {
+            Console.WriteLine("Employee number: " + employee.EmployeeNumber);
+            Console.WriteLine("Employee name: " + employee.FirstName + " " + employee.LastName);
+            Console.WriteLine("Employee username: " + employee.UserName);
+            Console.WriteLine("Employee email: " + employee.Email);
+            Console.WriteLine("Employee password: " + employee.Password);
+            Console.WriteLine("Employee ID: " + employee.EmployeeId);
+            Console.ReadLine();
+        }
+
         public static string GetStringData(string parameter, string target)
         {
             string data;
