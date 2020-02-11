@@ -348,17 +348,35 @@ namespace HumaneSociety
         // TODO: Adoption CRUD Operations
         internal static void Adopt(Animal animal, Client client)
         {
-            throw new NotImplementedException();
+            Adoption adopt = new Adoption();
+            adopt.ClientId = client.ClientId;
+            adopt.AnimalId = animal.AnimalId;
+            adopt.Animal = animal;
+            adopt.Client = client;
+            adopt.ApprovalStatus = "Pending";
+
+            db.SubmitChanges();
         }
 
         internal static IQueryable<Adoption> GetPendingAdoptions()
         {
-            throw new NotImplementedException();
+            return db.Adoptions.Where(a => a.ApprovalStatus == "Pending");
         }
 
         internal static void UpdateAdoption(bool isAdopted, Adoption adoption)
         {
-            throw new NotImplementedException();
+            var adopted = db.Adoptions.Where(a => a.AnimalId == adoption.AnimalId).SingleOrDefault();
+            if (isAdopted)
+            {
+                adopted.ApprovalStatus = "Approved";
+                adoption.Animal.AdoptionStatus = "Adopted";
+                db.SubmitChanges();
+            }
+            else
+            {
+                adopted.ApprovalStatus = "Denied";
+                db.SubmitChanges();
+            }
         }
 
         internal static void RemoveAdoption(int animalId, int clientId)
