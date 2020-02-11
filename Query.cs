@@ -301,7 +301,8 @@ namespace HumaneSociety
             var room = db.Rooms.Where(a => a.AnimalId == animalId).FirstOrDefault();
             return room;
         }
-        
+    
+
         internal static int GetDietPlanId(string dietPlanName)
         {
             var diet = db.DietPlans.Where(d => d.Name == dietPlanName).SingleOrDefault();
@@ -333,12 +334,27 @@ namespace HumaneSociety
         // TODO: Shots Stuff
         internal static IQueryable<AnimalShot> GetShots(Animal animal)
         {
-            throw new NotImplementedException();
+            db = new HumaneSocietyDataContext();
+            Console.WriteLine("Please enter the animal's ID number");
+            int animalID = int.Parse(Console.ReadLine());
+            var shots = db.AnimalShot.Where(a => a.Animal_ID == animalID);
+            return shots;
+        }
+
+        public static Shot GetShot(int shotId)
+        {
+            HumaneSocietyDataContext database = new HumaneSocietyDataContext();
+            var shot = database.Shots.Where(s => s.ID == shotId).First();
+            return shot;
         }
 
         internal static void UpdateShot(string shotName, Animal animal)
         {
-            throw new NotImplementedException();
+            db = new HumaneSocietyDataContext();
+            var updateShot = db.AnimalShot.Where(s => s.Animal_ID == animal.ID && s.Shot_ID == shotId).First();
+            updateShot.dateRecieved = DateTime.Now;
+
+            db.SubmitChanges();
         }
     }
   
