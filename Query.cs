@@ -337,7 +337,7 @@ namespace HumaneSociety
             db = new HumaneSocietyDataContext();
             Console.WriteLine("Please enter the animal's ID number");
             int animalID = int.Parse(Console.ReadLine());
-            var shots = db.AnimalShot.Where(a => a.Animal_ID == animalID);
+            var shots = db.AnimalShots.Where(a => a.Animal_ID == animalID);
             return shots;
         }
 
@@ -351,7 +351,7 @@ namespace HumaneSociety
         internal static void UpdateShot(string shotName, Animal animal)
         {
             db = new HumaneSocietyDataContext();
-            var updateShot = db.AnimalShot.Where(s => s.Animal_ID == animal.ID && s.Shot_ID == shotId).First();
+            var updateShot = db.AnimalShots.Where(s => s.Animal_ID == animal.ID && s.Shot_ID == shotId).First();
             updateShot.dateRecieved = DateTime.Now;
 
             db.SubmitChanges();
