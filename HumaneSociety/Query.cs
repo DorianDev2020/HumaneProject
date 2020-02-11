@@ -82,7 +82,7 @@ namespace HumaneSociety
             {
                 clientFromDb = db.Clients.Where(c => c.ClientId == clientWithUpdates.ClientId).Single();
             }
-            catch(InvalidOperationException e)
+            catch(InvalidOperationException)
             {
                 Console.WriteLine("No clients have a ClientId that matches the Client passed in.");
                 Console.WriteLine("No update have been made.");
@@ -194,9 +194,9 @@ namespace HumaneSociety
 
         public static void EmployeeCreator(Employee employee)
         {
-            HumaneSocietyDataContext database = new HumaneSocietyDataContext();
-            database.Employees.InsertOnSubmit(employee);
-            database.SubmitChanges();
+            db = new HumaneSocietyDataContext();
+            db.Employees.InsertOnSubmit(employee);
+            db.SubmitChanges();
         }
 
         public static void EmployeeReader(Employee employee)
@@ -206,16 +206,16 @@ namespace HumaneSociety
 
         public static void EmployeeUpdater(Employee employee)
         {
-            HumaneSocietyDataContext database = new HumaneSocietyDataContext();
-            database.Employees.InsertOnSubmit(employee);
-            database.SubmitChanges();
+            db = new HumaneSocietyDataContext();
+            db.Employees.InsertOnSubmit(employee);
+            db.SubmitChanges();
         }
 
         public static void EmployeeDeleter(Employee employee)
         {
-            HumaneSocietyDataContext database = new HumaneSocietyDataContext();
-            database.Employees.DeleteOnSubmit(employee);
-            database.SubmitChanges();
+            db = new HumaneSocietyDataContext();
+            db.Employees.DeleteOnSubmit(employee);
+            db.SubmitChanges();
         }
         //End (Dorian)
 
