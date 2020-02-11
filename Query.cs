@@ -347,17 +347,35 @@ namespace HumaneSociety
         // TODO: Adoption CRUD Operations
         internal static void Adopt(Animal animal, Client client)
         {
-            throw new NotImplementedException();
+            Adoption adopt = new Adoption();
+            adopt.ClientId = client.ClientId;
+            adopt.AnimalId = animal.AnimalId;
+            adopt.Animal = animal;
+            adopt.Client = client;
+            adopt.ApprovalStatus = "Pending";
+
+            db.SubmitChanges();
         }
 
         internal static IQueryable<Adoption> GetPendingAdoptions()
         {
-            throw new NotImplementedException();
+            return db.Adoptions.Where(a => a.ApprovalStatus == "Pending");
         }
 
         internal static void UpdateAdoption(bool isAdopted, Adoption adoption)
         {
-            throw new NotImplementedException();
+            var adopted = db.Adoptions.Where(a => a.AnimalId == adoption.AnimalId).SingleOrDefault();
+            if (isAdopted)
+            {
+                adopted.ApprovalStatus = "Approved";
+                adoption.Animal.AdoptionStatus = "Adopted";
+                db.SubmitChanges();
+            }
+            else
+            {
+                adopted.ApprovalStatus = "Denied";
+                db.SubmitChanges();
+            }
         }
 
         internal static void RemoveAdoption(int animalId, int clientId)
@@ -371,24 +389,24 @@ namespace HumaneSociety
             db = new HumaneSocietyDataContext();
             Console.WriteLine("Please enter the animal's ID number");
             int animalID = int.Parse(Console.ReadLine());
-            var shots = db.AnimalShots.Where(a => a.Animal_ID == animalID);
+            var shots = db.AnimalShots.Where(a => a.AnimalId == animalID);
             return shots;
         }
 
         public static Shot GetShot(int shotId)
         {
-            HumaneSocietyDataContext database = new HumaneSocietyDataContext();
-            var shot = database.Shots.Where(s => s.ID == shotId).First();
-            return shot;
+            
+            //return shot;
+            throw new NotImplementedException();
         }
 
         internal static void UpdateShot(string shotName, Animal animal)
         {
-            db = new HumaneSocietyDataContext();
-            var updateShot = db.AnimalShots.Where(s => s.Animal_ID == animal.ID && s.Shot_ID == shotId).First();
-            updateShot.dateRecieved = DateTime.Now;
+            //db = new HumaneSocietyDataContext();
+            //var updateShot = db.AnimalShots.Where(s => s.Animal_ID == animal.ID && s.Shot_ID == shotId).First();
+            //updateShot.dateRecieved = DateTime.Now;
 
-            db.SubmitChanges();
+            //db.SubmitChanges();
         }
     }
   
