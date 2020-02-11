@@ -192,8 +192,6 @@ namespace HumaneSociety
         
         internal static void AddEmployee(Employee employee)
         {
-
-            db = new HumaneSocietyDataContext();
             db.Employees.InsertOnSubmit(employee);
             db.SubmitChanges();
         }
@@ -285,7 +283,43 @@ namespace HumaneSociety
         // TODO: Animal Multi-Trait Search
         internal static IQueryable<Animal> SearchForAnimalsByMultipleTraits(Dictionary<int, string> updates) // parameter(s)?
         {
-            throw new NotImplementedException();
+            IQueryable<Animal> animal = db.Animals;
+            foreach(KeyValuePair<int, string> key in updates)
+            {
+                switch (key.Key)
+                {
+                    case 1:
+                        animal = animal.Where(a => a.AnimalId == Convert.ToInt32(key.Value));
+                        break;
+                    case 2:
+                        animal = animal.Where(a => a.Name == key.Value);
+                        break;
+                    case 3:
+                        animal = animal.Where(a => a.Age == Convert.ToInt32(key.Value));
+                        break;
+                    case 4:
+                        animal = animal.Where(a => a.Demeanor == key.Value);
+                        break;
+                    case 5:
+                        animal = animal.Where(a => a.KidFriendly.ToString() == key.Value);
+                        break;
+                    case 6:
+                        animal = animal.Where(a => a.PetFriendly.ToString() == key.Value);
+                        break;
+                    case 7:
+                        animal = animal.Where(a => a.Gender == key.Value);
+                        break;
+                    case 8:
+                        animal = animal.Where(a => a.Weight == Convert.ToInt32(key.Value));
+                        break;
+                    case 9:
+                        animal = animal.Where(a => a.Category.Name == key.Value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return animal;
         }
          
         // TODO: Misc Animal Things
