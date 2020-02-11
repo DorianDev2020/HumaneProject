@@ -9,6 +9,7 @@ namespace HumaneSociety
     public static class Query
     {        
         static HumaneSocietyDataContext db;
+        
 
         public delegate void EmployeeOperator(Employee employee);
 
@@ -387,27 +388,30 @@ namespace HumaneSociety
         // TODO: Shots Stuff
         internal static IQueryable<AnimalShot> GetShots(Animal animal)
         {
-            db = new HumaneSocietyDataContext();
-            Console.WriteLine("Please enter the animal's ID number");
-            int animalID = int.Parse(Console.ReadLine());
-            var shots = db.AnimalShots.Where(a => a.AnimalId == animalID);
+            var shots = db.AnimalShots.Where(a => a.Animal == animal);
             return shots;
         }
 
-        public static Shot GetShot(int shotId)
+        public static Shot GetShot()
         {
-            
-            //return shot;
-            throw new NotImplementedException();
+            Shot shot = new Shot();
+            var shot1 = db.Shots.Where(s => s == shot).First();
+            return shot;
         }
 
         internal static void UpdateShot(string shotName, Animal animal)
         {
-            //db = new HumaneSocietyDataContext();
-            //var updateShot = db.AnimalShots.Where(s => s.Animal_ID == animal.ID && s.Shot_ID == shotId).First();
-            //updateShot.dateRecieved = DateTime.Now;
+            Shot shot = new Shot();
+            shot.Name = shotName;
+            db.Shots.InsertOnSubmit(shot);
+            AnimalShot animalshot = new AnimalShot();
 
-            //db.SubmitChanges();
+            animalshot.DateReceived = DateTime.Now;
+            animalshot.AnimalId = animal.AnimalId;
+            animalshot.ShotId = shot.ShotId;
+            db.AnimalShots.InsertOnSubmit(animalshot);
+
+            db.SubmitChanges();
         }
     }
   
